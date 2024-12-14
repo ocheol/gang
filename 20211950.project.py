@@ -1,9 +1,3 @@
-# requests: HTTP 요청을 보내기 위한 라이브러리로, 서버에서 데이터를 가져오거나 보내는 데 사용합니다.
-import requests
-
-# datetime이란 현재 날짜와 시간을 가져오거나 조작하는 데 사용되는 표준 라이브러리입니다.
-from datetime import datetime
-
 # xmltodict이란 XML 형식의 데이터를 Python 딕셔너리(사전)로 변환하는 데 사용하는 라이브러리입니다.
 import xmltodict
 
@@ -79,6 +73,19 @@ def forecast(params):
     # 최종적으로 온도와 날씨 상태를 튜플 형태로 반환합니다.
     return temp, sky
 
+# -----------바뀐 부분 시작-------------------------
+# 위도와 경도를 사용자로부터 직접 입력받기 위해 print와 input을 활용합니다.
+# 사용자가 특정 위치의 날씨 데이터를 쉽게 조회할 수 있도록 하기 위해 변경하였습니다.
+print("날씨를 조회할 지역의 위도와 경도를 입력하세요.")  
+# 위도를 입력받아 latitude 변수에 저장
+latitude = input("위도: ")  
+# 경도를 입력받아 longitude 변수에 저장
+longitude = input("경도: ")  
+# 기존 코드에서는 위도와 경도를 미리 설정해두었지만, 이 방식은 특정 위치(예: 서울)만 조회가 가능하다는 한계가 있습니다.
+# 따라서 사용자가 원하는 지역의 날씨를 동적으로 조회할 수 있도록 위도와 경도를 입력받는 방식으로 변경하였습니다.
+# 위도와 경도를 `input()`으로 입력받아 사용자가 다양한 지역을 직접 조회할 수 있게 확장성을 높였습니다.
+#------------바뀐 부분 끝----------------------
+
 # 기상청 API 호출 시 필요한 인증 키 (기상청에서 발급) 입니다.
 keys = '%2FLqgJiy2ddbDwCCO5BbKA1Rq%2FYUounM0%2B%2FTw2%2F94WPbRQGjxODuySL46A8V10U%2F2XHIjlVFdefSCvysQ8WON7w%3D%3D'
 
@@ -105,5 +112,39 @@ params = {
 # 위에서 정의한 forecast 함수를 호출하여 온도와 날씨 데이터를 가져옵니다.
  # API 응답으로부터 데이터를 받아 처리합니다.
 forecast_data = forecast(params)  
-# 결과를 출력합니다.
-print(f"현재 온도: {forecast_data[0]}°C, 현재 날씨: {forecast_data[1]}")  
+
+# ------------------------- 바뀐 부분 시작 -------------------------
+
+# 현재 날짜와 시간을 보기 좋게 포맷팅하여 출력하였습니다.
+# 날짜와 시간을 사람이 읽기 쉬운 형식으로 출력하기 위해 `strftime`을 사용하였습니다..
+# 이 형식은 사용자가 날씨 데이터가 어느 시점의 데이터인지 명확히 이해할 수 있도록 도와주었습니다..
+
+current_date = datetime.now().strftime("%Y 년 %m 월 %d 일")
+current_hour = datetime.now().strftime("%H%M 시")
+
+
+# 출력 형식 변경하였습니다.
+print(f"{current_date} {current_hour}의 날씨 데이터입니다:")
+print(f"기온은 {forecast_data[0]}도 입니다.")
+
+# 강수 상태에 따른 메시지를 if-elif-else 문으로 출력하였습니다.
+# 강수 형태에 따라 날씨 메시지를 세분화하여 출력하였습니다.
+# 사용자 경험을 개선하기 위해 날씨 조건에 따른 조언을 추가하였습니다.
+# 예시로는 비가 올 경우 "우산을 챙기세요!", 눈이 올 경우 "따뜻하게 입으세요!" 등 입니다.
+
+if forecast_data[1] == "비":
+    print("비가 와요. 우산을 챙겨주세요!")
+elif forecast_data[1] == "비/눈":
+    print("비 또는 눈이 와요. 따뜻하게 입고 우산을 챙기세요!")
+elif forecast_data[1] == "눈":
+    print("눈이 와요. 장갑을 꼭 챙기세요!")
+elif forecast_data[1] == "빗방울":
+    print("빗방울이 떨어져요. 우산을 챙겨주세요!")
+elif forecast_data[1] == "빗방울눈날림":
+    print("빗방울과 눈이 흩날려요. 우산과 따뜻한 옷을 준비하세요!")
+elif forecast_data[1] == "눈날림":
+    print("눈이 흩날려요. 따뜻하게 입으세요!")
+else:
+    print("날씨가 좋네요!")
+
+# ------------------------- 바뀐 부분 끝 -------------------------
