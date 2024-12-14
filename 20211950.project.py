@@ -1,3 +1,9 @@
+# requests: HTTP 요청을 보내기 위한 라이브러리로, 서버에서 데이터를 가져오거나 보내는 데 사용합니다.
+import requests
+
+# datetime이란 현재 날짜와 시간을 가져오거나 조작하는 데 사용되는 표준 라이브러리입니다.
+from datetime import datetime
+
 # xmltodict이란 XML 형식의 데이터를 Python 딕셔너리(사전)로 변환하는 데 사용하는 라이브러리입니다.
 import xmltodict
 
